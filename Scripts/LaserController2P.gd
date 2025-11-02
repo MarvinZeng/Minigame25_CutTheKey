@@ -11,7 +11,16 @@ var cut_cooldown: float = 0.0
 var min_cut_distance: float = 5.0  # 最小切割距离，让切割更连续
 var was_touching_key: bool = false  # 上一帧是否接触钥匙
 
+# 移动距离统计（用于胜负判定）
+var total_move_distance: float = 0.0
+
+# 倒计时期间限制移动
+var is_countdown_active: bool = false
+
 func _ready():
+	# 添加到2P激光分组
+	add_to_group("laser_2p")
+	
 	# 设置为字符模式（不受物理影响，手动控制）
 	freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 	freeze = true
@@ -39,7 +48,18 @@ func _physics_process(delta):
 	# 归一化并应用速度
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * move_speed
-		position += velocity * delta
+		var old_pos = position
+		var new_pos = position + velocity * delta
+		
+		# 倒计时期间检测是否会进入钥匙区域
+		if is_countdown_active and _would_enter_key_area(new_pos):
+			# 不允许移动
+			velocity = Vector2.ZERO
+		else:
+			# 允许移动
+			position = new_pos
+			# 累加移动距离
+			total_move_distance += old_pos.distance_to(position)
 	else:
 		velocity = Vector2.ZERO
 	
@@ -134,3 +154,31 @@ func check_cutting():
 	
 	# 更新状态
 	was_touching_key = is_touching
+
+func _would_enter_key_area(test_position: Vector2) -> bool:
+	"""检测指定位置是否会进入钥匙区域"""
+	# 查找2P钥匙
+	var key = get_tree().get_first_node_in_group("key_2p")
+	if not key:
+		return false
+	
+	# 获取钥匙的碰撞形状
+	var key_collision = key.get_node_or_null("CollisionShape2D")
+	if not key_collision or not key_collision.shape:
+		return false
+	
+	# 使用物理查询检测测试位置是否与钥匙重叠
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsPointQueryParameters2D.new()
+	query.position = test_position
+	query.collide_with_areas = false
+	query.collide_with_bodies = true
+	
+	var results = space_state.intersect_point(query, 1)
+	
+	# 检查是否与钥匙碰撞
+	for result in results:
+		if result.collider == key:
+			return true
+	
+	return false

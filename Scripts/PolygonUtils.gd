@@ -29,6 +29,13 @@ static func split_polygon_by_line(polygon: PackedVector2Array, line_start: Vecto
 	
 	# 如果没有交点或只有一个交点，无法分割
 	if intersections.size() < 2:
+		print("  ⚠ 找到的交点数: %d (需要至少2个)" % intersections.size())
+		if intersections.size() == 1:
+			print("    唯一交点: (%.1f, %.1f) 在边 %d" % [
+				intersections[0].point.x,
+				intersections[0].point.y,
+				intersections[0].edge_index
+			])
 		return [polygon]  # 返回原多边形
 	
 	# 按切割线参数t排序交点
@@ -157,6 +164,20 @@ static func create_polygon_from_rect(rect: Rect2) -> PackedVector2Array:
 		rect.position + rect.size,
 		rect.position + Vector2(0, rect.size.y)
 	])
+
+# 延长线段使其穿过边界框（扩展1.5倍边界框大小）
+static func extend_line_to_bounds(line_start: Vector2, line_end: Vector2, bounds: Rect2) -> Array:
+	var direction = (line_end - line_start).normalized()
+	
+	# 计算需要延伸的距离（取边界框对角线长度的2倍）
+	var bounds_diagonal = bounds.size.length()
+	var extension = bounds_diagonal * 2.0
+	
+	# 向两个方向延伸
+	var extended_start = line_start - direction * extension
+	var extended_end = line_end + direction * extension
+	
+	return [extended_start, extended_end]
 
 # 计算多边形的边界框
 static func get_polygon_bounds(polygon: PackedVector2Array) -> Rect2:

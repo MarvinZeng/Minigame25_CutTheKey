@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ddfu5jn53hcu1"]
+[gd_scene load_steps=18 format=3 uid="uid://ddfu5jn53hcu1"]
 
 [ext_resource type="Texture2D" uid="uid://blb58bhc5rbkx" path="res://Assets/Sprite/Ingame_Key_Shining.png" id="1_27c5n"]
 [ext_resource type="Script" uid="uid://xoe3yiyqu3lk" path="res://Scripts/KeyBlade.gd" id="1_key_script"]
@@ -7,15 +7,35 @@
 [ext_resource type="Texture2D" uid="uid://c4slk4eyfkgti" path="res://Assets/Sprite/Mainpage_BG.png" id="2_6bud7"]
 [ext_resource type="Texture2D" uid="uid://ceu3jm1dujgw1" path="res://Assets/Sprite/MainPage_Title.png" id="3_3wbik"]
 [ext_resource type="PackedScene" uid="uid://baxqya4tut8jt" path="res://Scenes/Ingame_2d_laser.tscn" id="3_df812"]
-[ext_resource type="Script" path="res://Scripts/LaserController2P.gd" id="3_laser_script_2p"]
+[ext_resource type="Script" uid="uid://khqs14duy8kr" path="res://Scripts/LaserController2P.gd" id="3_laser_script_2p"]
 [ext_resource type="Texture2D" uid="uid://cjgmeernhlw5p" path="res://Assets/Sprite/MainPage_Btn.png" id="4_tlkba"]
-[ext_resource type="Script" path="res://Scripts/UIManager.gd" id="4_ui_manager_script"]
+[ext_resource type="Script" uid="uid://7h3vlcc80ta4" path="res://Scripts/UIManager.gd" id="4_ui_manager_script"]
 [ext_resource type="Texture2D" uid="uid://lfnpvsyjwnjn" path="res://Assets/Sprite/Ingame_BG1.png" id="5_cop02"]
+[ext_resource type="AudioStream" uid="uid://8k0gjujtk53b" path="res://Assets/Audio/BGM2.MP3" id="6_audio_bgm"]
+[ext_resource type="AudioStream" uid="uid://cuah13gi3nf8g" path="res://Assets/Audio/Click.MP3" id="7_audio_click"]
+[ext_resource type="AudioStream" uid="uid://cngjsiri3whm2" path="res://Assets/Audio/Button.MP3" id="8_audio_button"]
+[ext_resource type="AudioStream" uid="uid://cf7ddtrnm52ui" path="res://Assets/Audio/CountDown.MP3" id="9_audio_countdown"]
+[ext_resource type="PackedScene" uid="uid://blsjfp5nfwipr" path="res://Scenes/spark.tscn" id="10_spark"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pkr1v"]
 
 [node name="Ingame_Scene" type="Node2D"]
 script = ExtResource("4_ui_manager_script")
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_audio_bgm")
+volume_db = -6.0
+autoplay = true
+
+[node name="ClickSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_audio_click")
+
+[node name="ButtonSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_audio_button")
+
+[node name="CountdownSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_audio_countdown")
+volume_db = -11.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-12, 0)
@@ -27,24 +47,34 @@ zoom = Vector2(0.28, 0.28)
 scale = Vector2(3.08, 3)
 texture = ExtResource("5_cop02")
 
-[node name="CountdownLabel" type="Label" parent="UI_Ingame"]
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
-theme_override_font_sizes/font_size = 200
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="TimerLabel" type="Label" parent="UI_Ingame"]
-offset_left = 881.0
-offset_top = -1056.0
-offset_right = 1191.0
-offset_bottom = -956.0
-scale = Vector2(3.614, 3.38901)
+offset_left = 778.0
+offset_top = -984.0
+offset_right = 1088.0
+offset_bottom = -884.0
+scale = Vector2(3.12719, 2.98697)
 theme_override_font_sizes/font_size = 60
 text = "倒计时: 30s"
+horizontal_alignment = 2
+
+[node name="1Phint" type="Label" parent="UI_Ingame"]
+offset_left = -1983.0
+offset_top = -471.0
+offset_right = -1499.0
+offset_bottom = -371.0
+scale = Vector2(2.36073, 2.42781)
+theme_override_font_sizes/font_size = 60
+text = "1P使用WASD移动"
+horizontal_alignment = 2
+
+[node name="2Phint" type="Label" parent="UI_Ingame"]
+offset_left = 580.0
+offset_top = -467.0
+offset_right = 1077.0
+offset_bottom = -367.0
+scale = Vector2(2.36073, 2.42781)
+theme_override_font_sizes/font_size = 60
+text = "2P使用⬆️⬇️⬅️➡️移动"
 horizontal_alignment = 2
 
 [node name="Ingame" type="Node2D" parent="."]
@@ -58,6 +88,7 @@ gravity_scale = 0.0
 script = ExtResource("1_key_script")
 
 [node name="Image" type="Sprite2D" parent="Ingame/1P/Ingame_Key_Origin_1P"]
+modulate = Color(0.999974, 0.471451, 0.459802, 1)
 texture = ExtResource("1_ydafy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame/1P/Ingame_Key_Origin_1P"]
@@ -66,7 +97,7 @@ scale = Vector2(38, 13.5)
 shape = SubResource("RectangleShape2D_pkr1v")
 
 [node name="Ingame_Key_Target_1P" type="Sprite2D" parent="Ingame/1P"]
-modulate = Color(1, 1, 1, 0.27451)
+modulate = Color(1, 1, 1, 0.352941)
 position = Vector2(-1020.9, 623)
 scale = Vector2(3.4, 3.48)
 texture = ExtResource("2_4afd6")
@@ -101,7 +132,7 @@ texture = ExtResource("2_4afd6")
 
 [node name="Ingame_2D_Laser_2P" parent="Ingame/2P" instance=ExtResource("3_df812")]
 modulate = Color(0.958213, 1.76864, 1.89165, 1)
-position = Vector2(869, 83)
+position = Vector2(993, 83)
 script = ExtResource("3_laser_script_2p")
 
 [node name="Public" type="Node2D" parent="Ingame"]
@@ -122,6 +153,27 @@ texture = ExtResource("1_27c5n")
 [node name="ActualKeyShape" type="Polygon2D" parent="Ingame/Public/IngameKeyShining"]
 polygon = PackedVector2Array(-13.1845, -17.1778, -7.01758, -17.1778, 1.27592, -17.1778, 11.696, -7.30055, 23.6046, -18.2514, 49.3357, -18.2514, 53.5888, -10.9509, 59.1178, -18.4662, 92.7171, -18.4662, 96.9702, -13.0981, 103.137, -19.1103, 126.104, -19.1103, 137.8, -6.65639, 137.8, -1.28831, 124.615, 13.0981, 90.1653, 13.0981, 86.3375, 10.092, 80.8085, 16.319, 69.3252, 16.319, 66.986, 12.454, 62.9456, 16.319, 39.341, 16.319, 33.812, 10.9509, 28.7083, 16.7484, -13.1845, 16.7484)
 
+[node name="CountdownOverlay" type="ColorRect" parent="Ingame/Public"]
+offset_left = -2388.0
+offset_top = -1400.0
+offset_right = 2412.0
+offset_bottom = 1400.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="CountdownLabel" type="Label" parent="Ingame/Public"]
+offset_left = -188.0
+offset_top = -150.0
+offset_right = 212.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 200
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spark" parent="Ingame" instance=ExtResource("10_spark")]
+visible = false
+position = Vector2(-1008, 450)
+
 [node name="UI_Setting" type="Node2D" parent="."]
 visible = false
 
@@ -139,62 +191,70 @@ text = "设置"
 horizontal_alignment = 1
 
 [node name="MasterVolumeLabel" type="Label" parent="UI_Setting"]
-offset_left = -500.0
+offset_left = -789.0
 offset_top = -500.0
-offset_right = -100.0
+offset_right = -389.0
 offset_bottom = -445.0
+scale = Vector2(1.72, 1.84)
 theme_override_font_sizes/font_size = 40
 text = "主音量"
 
 [node name="MasterVolumeSlider" type="HSlider" parent="UI_Setting"]
-offset_left = -50.0
-offset_top = -500.0
-offset_right = 450.0
-offset_bottom = -450.0
+offset_left = -418.0
+offset_top = -502.0
+offset_right = 82.0
+offset_bottom = -452.0
+scale = Vector2(1.48, 1.68014)
 value = 80.0
 
 [node name="MasterVolumeValue" type="Label" parent="UI_Setting"]
-offset_left = 500.0
-offset_top = -500.0
-offset_right = 600.0
-offset_bottom = -445.0
+offset_left = 349.0
+offset_top = -495.0
+offset_right = 449.0
+offset_bottom = -440.0
+scale = Vector2(1.8, 1.6)
 theme_override_font_sizes/font_size = 40
 text = "80"
 
 [node name="GameTimeLabel" type="Label" parent="UI_Setting"]
-offset_left = -500.0
+offset_left = -788.0
 offset_top = -300.0
-offset_right = -100.0
+offset_right = -388.0
 offset_bottom = -245.0
+scale = Vector2(1.71586, 1.80387)
 theme_override_font_sizes/font_size = 40
 text = "游戏时长"
 
 [node name="GameTime30Btn" type="Button" parent="UI_Setting"]
-offset_left = -50.0
+offset_left = -400.0
 offset_top = -300.0
-offset_right = 100.0
-offset_bottom = -250.0
+offset_right = -150.0
+offset_bottom = -200.0
+theme_override_font_sizes/font_size = 50
 text = "30秒"
 
 [node name="GameTime60Btn" type="Button" parent="UI_Setting"]
-offset_left = 150.0
+offset_left = -100.0
 offset_top = -300.0
-offset_right = 300.0
-offset_bottom = -250.0
+offset_right = 150.0
+offset_bottom = -200.0
+theme_override_font_sizes/font_size = 50
 text = "60秒"
 
 [node name="GameTime90Btn" type="Button" parent="UI_Setting"]
-offset_left = 350.0
+offset_left = 200.0
 offset_top = -300.0
-offset_right = 500.0
-offset_bottom = -250.0
+offset_right = 450.0
+offset_bottom = -200.0
+theme_override_font_sizes/font_size = 50
 text = "90秒"
 
 [node name="BackBtn" type="Button" parent="UI_Setting"]
-offset_left = -150.0
-offset_top = 500.0
-offset_right = 150.0
-offset_bottom = 600.0
+offset_left = -197.0
+offset_top = 279.0
+offset_right = 203.0
+offset_bottom = 429.0
+theme_override_font_sizes/font_size = 60
 text = "返回"
 
 [node name="UI_MainPage" type="Node2D" parent="."]
@@ -239,10 +299,22 @@ offset_top = 246.0
 offset_right = 1263.0
 offset_bottom = 327.0
 scale = Vector2(3.64, 3.76)
-text = "quit"
+text = "Quit"
 icon = ExtResource("4_tlkba")
 autowrap_mode = 3
 icon_alignment = 1
+
+[node name="2Phint2" type="Label" parent="UI_MainPage"]
+modulate = Color(0.925565, 0.766173, 0.665645, 1)
+offset_left = 184.0
+offset_top = 844.0
+offset_right = 1238.0
+offset_bottom = 1013.0
+scale = Vector2(1.68913, 1.707)
+theme_override_font_sizes/font_size = 60
+text = "钥匙大师是一款本地双人派对游戏
+需要两人同时游玩才能获得最佳体验哦~"
+horizontal_alignment = 1
 
 [node name="UI_Result" type="Node2D" parent="."]
 visible = false
@@ -269,7 +341,7 @@ offset_top = -350.0
 offset_right = -50.0
 offset_bottom = -250.0
 theme_override_font_sizes/font_size = 60
-text = "1P: 0%"
+text = "1P完成度: 0%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -279,7 +351,7 @@ offset_top = -350.0
 offset_right = 400.0
 offset_bottom = -250.0
 theme_override_font_sizes/font_size = 60
-text = "2P: 0%"
+text = "2P完成度: 0%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
