@@ -265,42 +265,8 @@ func _find_all_collision_shapes(node: Node) -> Array:
 		result.append_array(_find_all_collision_shapes(child))
 	return result
 
-# 初始化多边形（优先从Polygon2D读取，否则从CollisionShape2D获取）
+# 初始化多边形（从CollisionShape2D获取或创建默认矩形）
 func initialize_polygon():
-	# 优先方法：从Polygon2D节点读取多边形顶点（如果存在）
-	var polygon2d_node = get_node_or_null("Polygon2D")
-	if polygon2d_node and polygon2d_node.polygon.size() >= 3:
-		# 将Polygon2D的顶点坐标转换为相对于RigidBody2D的本地坐标
-		# Polygon2D的polygon是相对于Polygon2D节点的，需要加上Polygon2D的position
-		var polygon2d_local_pos = polygon2d_node.position
-		var polygon2d_scale = polygon2d_node.scale
-		
-		current_polygon = PackedVector2Array()
-		for vertex in polygon2d_node.polygon:
-			# 先应用Polygon2D的scale，然后加上position偏移
-			var scaled_vertex = vertex * polygon2d_scale
-			var world_vertex = polygon2d_local_pos + scaled_vertex
-			current_polygon.append(world_vertex)
-		
-		print("从Polygon2D加载多边形，顶点数: ", current_polygon.size())
-		print("多边形边界: ", PolygonUtils.get_polygon_bounds(current_polygon))
-		
-		# 尝试创建PolygonShape2D（如果失败，物理碰撞仍然使用RectangleShape2D）
-		var collision = get_node_or_null("CollisionShape2D")
-		if collision:
-			var new_polygon_shape = create_polygon_shape_resource()
-			if new_polygon_shape != null:
-				new_polygon_shape.polygon = current_polygon
-				polygon_shape = new_polygon_shape
-				# 注意：不替换collision.shape，保持RectangleShape2D用于物理交互
-				# polygon_shape 仅用于切割计算
-				print("已从Polygon2D创建多边形，用于切割计算")
-			else:
-				print("警告：无法创建PolygonShape2D，切割功能可能受限")
-				print("提示：需要在场景中至少有一个PolygonShape2D资源以供复制")
-		return
-	
-	# 备选方法：从CollisionShape2D获取
 	var collision = get_node_or_null("CollisionShape2D")
 	if collision and collision.shape:
 		# 检查是否是多边形形状
@@ -381,14 +347,9 @@ func attempt_split():
 	if cut_path_world.size() < 2:
 		return
 	
-	# 获取切割线的起点和终点（转换为RigidBody2D的本地坐标）
+	# 获取切割线的起点和终点（本地坐标）
 	var cut_start_local = to_local(cut_path_world[0])
 	var cut_end_local = to_local(cut_path_world[cut_path_world.size() - 1])
-	
-	print("尝试分割多边形: 切割线从 ", cut_start_local, " 到 ", cut_end_local)
-	print("当前多边形顶点数: ", current_polygon.size())
-	if current_polygon.size() > 0:
-		print("多边形范围: ", PolygonUtils.get_polygon_bounds(current_polygon))
 	
 	# 执行多边形分割
 	var split_result = PolygonUtils.split_polygon_by_line(
@@ -414,28 +375,21 @@ func attempt_split():
 # 创建分割后的碎片
 func create_split_fragments(polygons: Array, cut_start: Vector2, cut_end: Vector2):
 	if polygons.size() < 2:
-		print("分割失败：只产生了 ", polygons.size(), " 个多边形（需要至少2个）")
 		return
-	
-	print("开始创建 ", polygons.size(), " 个碎片...")
 	
 	# 为每个碎片创建新的RigidBody2D
 	for i in range(polygons.size()):
 		var fragment_polygon = polygons[i] as PackedVector2Array
 		if fragment_polygon.size() < 3:
-			print("跳过碎片 ", i, "：顶点数不足（", fragment_polygon.size(), "）")
 			continue
 		
-		# 计算碎片的多边形边界框（本地坐标）
+		# 计算碎片的多边形边界框
 		var bounds = PolygonUtils.get_polygon_bounds(fragment_polygon)
-		print("碎片 ", i, " 边界: ", bounds, " 顶点数: ", fragment_polygon.size())
 		
 		# 创建新的RigidBody2D
 		var fragment = RigidBody2D.new()
 		fragment.gravity_scale = 1.0  # 启用重力，让碎片掉落
-		# bounds.get_center()是本地坐标，需要转换为世界坐标
-		var fragment_local_center = bounds.get_center()
-		fragment.position = global_position + fragment_local_center
+		fragment.position = global_position + bounds.get_center()
 		
 		# 添加CollisionShape2D
 		var fragment_collision = CollisionShape2D.new()
