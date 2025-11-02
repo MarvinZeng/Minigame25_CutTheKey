@@ -8,14 +8,14 @@ var velocity: Vector2 = Vector2.ZERO
 var previous_position: Vector2
 var last_cut_position: Vector2 = Vector2.ZERO
 var cut_cooldown: float = 0.0
-var min_cut_distance: float = 5.0  # 最小切割距离，让切割更连续（减少以提高连续性）
+var min_cut_distance: float = 5.0  # 最小切割距离，让切割更连续
 var was_touching_key: bool = false  # 上一帧是否接触钥匙
 
 func _ready():
 	# 设置为字符模式（不受物理影响，手动控制）
 	freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
 	freeze = true
-	# 禁用物理碰撞层，避免推动钥匙（设置为0表示不参与碰撞）
+	# 禁用物理碰撞层，避免推动钥匙
 	collision_layer = 0
 	# 但仍可以通过代码检测碰撞
 	previous_position = global_position
@@ -24,16 +24,16 @@ func _physics_process(delta):
 	if not laser_active:
 		return
 	
-	# WASD输入（1P控制，不支持方向键）
+	# 方向键输入（2P控制）
 	velocity = Vector2.ZERO
 	
-	if Input.is_key_pressed(KEY_W):
+	if Input.is_action_pressed("ui_up"):
 		velocity.y -= 1
-	if Input.is_key_pressed(KEY_S):
+	if Input.is_action_pressed("ui_down"):
 		velocity.y += 1
-	if Input.is_key_pressed(KEY_A):
+	if Input.is_action_pressed("ui_left"):
 		velocity.x -= 1
-	if Input.is_key_pressed(KEY_D):
+	if Input.is_action_pressed("ui_right"):
 		velocity.x += 1
 	
 	# 归一化并应用速度
@@ -52,13 +52,13 @@ func _physics_process(delta):
 	previous_position = global_position
 
 func check_cutting():
-	# 直接通过分组查找1P钥匙节点
-	var key = get_tree().get_first_node_in_group("key_1p")
+	# 直接通过分组查找2P钥匙节点
+	var key = get_tree().get_first_node_in_group("key_2p")
 	if not key:
 		# 如果没找到，通过名称查找
 		var parent = get_parent()
 		if parent:
-			key = parent.find_child("Ingame_Key_Origin_1P", true, false)
+			key = parent.find_child("Ingame_Key_Origin_2P", true, false)
 	
 	if not key or not key is RigidBody2D:
 		return
@@ -106,10 +106,10 @@ func check_cutting():
 					last_cut_position = laser_detection_pos
 				break  # 找到钥匙，跳出循环
 	
-	# 方法2：如果形状查询没找到，使用点查询（使用碰撞形状的位置，不是主体位置）
+	# 方法2：如果形状查询没找到，使用点查询
 	if not is_touching:
 		var query_point = PhysicsPointQueryParameters2D.new()
-		query_point.position = laser_detection_pos  # 使用碰撞形状的位置，不是global_position
+		query_point.position = laser_detection_pos
 		query_point.collide_with_areas = false
 		query_point.collide_with_bodies = true
 		query_point.collision_mask = 0xFFFFFFFF

@@ -1,35 +1,302 @@
-[gd_scene load_steps=6 format=3 uid="uid://ddfu5jn53hcu1"]
+[gd_scene load_steps=13 format=3 uid="uid://ddfu5jn53hcu1"]
 
+[ext_resource type="Texture2D" uid="uid://blb58bhc5rbkx" path="res://Assets/Sprite/Ingame_Key_Shining.png" id="1_27c5n"]
 [ext_resource type="Script" uid="uid://xoe3yiyqu3lk" path="res://Scripts/KeyBlade.gd" id="1_key_script"]
 [ext_resource type="Texture2D" uid="uid://b3l1k0xphfqde" path="res://Assets/Sprite/Ingame_Key_Origin.png" id="1_ydafy"]
 [ext_resource type="Texture2D" uid="uid://w1q4dxli244f" path="res://Assets/Sprite/Ingame_Key_Target.png" id="2_4afd6"]
+[ext_resource type="Texture2D" uid="uid://c4slk4eyfkgti" path="res://Assets/Sprite/MainPage_BG.png" id="2_6bud7"]
+[ext_resource type="Texture2D" uid="uid://ceu3jm1dujgw1" path="res://Assets/Sprite/MainPage_Title.png" id="3_3wbik"]
 [ext_resource type="PackedScene" uid="uid://baxqya4tut8jt" path="res://Scenes/Ingame_2d_laser.tscn" id="3_df812"]
+[ext_resource type="Script" uid="uid://khqs14duy8kr" path="res://Scripts/LaserController2P.gd" id="3_laser_script_2p"]
+[ext_resource type="Texture2D" uid="uid://cjgmeernhlw5p" path="res://Assets/Sprite/MainPage_Btn.png" id="4_tlkba"]
+[ext_resource type="Script" uid="uid://7h3vlcc80ta4" path="res://Scripts/UIManager.gd" id="4_ui_manager_script"]
+[ext_resource type="Texture2D" uid="uid://lfnpvsyjwnjn" path="res://Assets/Sprite/Ingame_BG1.png" id="5_cop02"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pkr1v"]
 
 [node name="Ingame_Scene" type="Node2D"]
+script = ExtResource("4_ui_manager_script")
 
-[node name="Ingame_Key_Origin" type="RigidBody2D" parent="."]
-position = Vector2(4, 0)
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(-12, 0)
+zoom = Vector2(0.28, 0.28)
+
+[node name="UI_Ingame" type="Node2D" parent="."]
+
+[node name="Ingame_BG" type="Sprite2D" parent="UI_Ingame"]
+scale = Vector2(3.079999, 3.0000007)
+texture = ExtResource("5_cop02")
+
+[node name="CountdownLabel" type="Label" parent="UI_Ingame"]
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 200
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="UI_Ingame"]
+offset_left = 881.0001
+offset_top = -1056.0
+offset_right = 1191.0001
+offset_bottom = -956.0
+scale = Vector2(3.6140046, 3.3890092)
+theme_override_font_sizes/font_size = 60
+text = "倒计时: 30s"
+horizontal_alignment = 2
+
+[node name="Ingame" type="Node2D" parent="."]
+position = Vector2(-12, 0)
+
+[node name="1P" type="Node2D" parent="Ingame"]
+
+[node name="Ingame_Key_Origin_1P" type="RigidBody2D" parent="Ingame/1P"]
+position = Vector2(-1016.8999, 626)
 gravity_scale = 0.0
 script = ExtResource("1_key_script")
 
-[node name="Image" type="Sprite2D" parent="Ingame_Key_Origin"]
+[node name="Image" type="Sprite2D" parent="Ingame/1P/Ingame_Key_Origin_1P"]
 texture = ExtResource("1_ydafy")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame_Key_Origin"]
-position = Vector2(268, -1)
-scale = Vector2(42, 13.4)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame/1P/Ingame_Key_Origin_1P"]
+position = Vector2(310.8999, -1)
+scale = Vector2(38, 13.5)
 shape = SubResource("RectangleShape2D_pkr1v")
 
-[node name="Ingame_Key_Target" type="Sprite2D" parent="."]
+[node name="Ingame_Key_Target_1P" type="Sprite2D" parent="Ingame/1P"]
 modulate = Color(1, 1, 1, 0.27451)
-position = Vector2(0, -3)
+position = Vector2(-1020.8999, 623)
 scale = Vector2(3.4, 3.48)
 texture = ExtResource("2_4afd6")
 
-[node name="Ingame_2D_Laser" parent="." instance=ExtResource("3_df812")]
-position = Vector2(-38, -539)
+[node name="Ingame_2D_Laser_1P" parent="Ingame/1P" instance=ExtResource("3_df812")]
+position = Vector2(-1130, 87)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
+[node name="2P" type="Node2D" parent="Ingame"]
+
+[node name="Ingame_Key_Origin_2P" type="RigidBody2D" parent="Ingame/2P"]
+modulate = Color(0.49019608, 0, 1, 1)
+position = Vector2(985.1001, 626.48)
+gravity_scale = 0.0
+script = ExtResource("1_key_script")
+
+[node name="Image" type="Sprite2D" parent="Ingame/2P/Ingame_Key_Origin_2P"]
+position = Vector2(-0.100097656, -0.47998047)
+texture = ExtResource("1_ydafy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame/2P/Ingame_Key_Origin_2P"]
+visible = false
+position = Vector2(310, -5)
+scale = Vector2(38, 13.5)
+shape = SubResource("RectangleShape2D_pkr1v")
+
+[node name="Ingame_Key_Target_2P" type="Sprite2D" parent="Ingame/2P"]
+modulate = Color(1, 1, 1, 0.27451)
+position = Vector2(981.1, 623.48)
+scale = Vector2(3.4, 3.48)
+texture = ExtResource("2_4afd6")
+
+[node name="Ingame_2D_Laser_2P" parent="Ingame/2P" instance=ExtResource("3_df812")]
+modulate = Color(0.95821273, 1.7686381, 1.8916494, 1)
+position = Vector2(869, 83)
+scale = Vector2(-1, 1)
+script = ExtResource("3_laser_script_2p")
+
+[node name="Public" type="Node2D" parent="Ingame"]
+
+[node name="EndDrawingBtn" type="Button" parent="Ingame/Public"]
+offset_left = -1964.0
+offset_top = 808.99976
+offset_right = -1926.0
+offset_bottom = 839.99976
+scale = Vector2(5.160001, 4.479998)
+text = "End"
+
+[node name="IngameKeyShining" type="Sprite2D" parent="Ingame/Public"]
+position = Vector2(25, -825)
+scale = Vector2(3.8224726, 3.8571606)
+texture = ExtResource("1_27c5n")
+
+[node name="ActualKeyShape" type="Polygon2D" parent="Ingame/Public/IngameKeyShining"]
+polygon = PackedVector2Array(-13.184544, -17.17781, -7.0175796, -17.17781, 1.2759237, -17.17781, 11.695967, -7.3005524, 23.604586, -18.251434, 49.335716, -18.251434, 53.588795, -10.950851, 59.117794, -18.466156, 92.71711, -18.466156, 96.97019, -13.0980835, 103.13715, -19.110321, 126.10378, -19.110321, 137.79976, -6.6563873, 137.79976, -1.2883148, 124.615204, 13.098137, 90.16527, 13.098137, 86.337494, 10.092018, 80.808495, 16.318985, 69.32518, 16.318985, 66.985985, 12.453972, 62.945568, 16.318985, 39.34098, 16.318985, 33.811977, 10.950905, 28.70828, 16.748436, -13.184544, 16.748436)
+
+[node name="UI_Setting" type="Node2D" parent="."]
+visible = false
+
+[node name="Setting_BG" type="Sprite2D" parent="UI_Setting"]
+scale = Vector2(3.1200001, 3)
+texture = ExtResource("2_6bud7")
+
+[node name="Setting_Title" type="Label" parent="UI_Setting"]
+offset_left = -300.0
+offset_top = -800.0
+offset_right = 300.0
+offset_bottom = -690.0
+theme_override_font_sizes/font_size = 80
+text = "设置"
+horizontal_alignment = 1
+
+[node name="MasterVolumeLabel" type="Label" parent="UI_Setting"]
+offset_left = -500.0
+offset_top = -500.0
+offset_right = -100.0
+offset_bottom = -445.0
+theme_override_font_sizes/font_size = 40
+text = "主音量"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="UI_Setting"]
+offset_left = -50.0
+offset_top = -500.0
+offset_right = 450.0
+offset_bottom = -450.0
+value = 80.0
+
+[node name="MasterVolumeValue" type="Label" parent="UI_Setting"]
+offset_left = 500.0
+offset_top = -500.0
+offset_right = 600.0
+offset_bottom = -445.0
+theme_override_font_sizes/font_size = 40
+text = "80"
+
+[node name="GameTimeLabel" type="Label" parent="UI_Setting"]
+offset_left = -500.0
+offset_top = -300.0
+offset_right = -100.0
+offset_bottom = -245.0
+theme_override_font_sizes/font_size = 40
+text = "游戏时长"
+
+[node name="GameTime30Btn" type="Button" parent="UI_Setting"]
+offset_left = -50.0
+offset_top = -300.0
+offset_right = 100.0
+offset_bottom = -250.0
+text = "30秒"
+
+[node name="GameTime60Btn" type="Button" parent="UI_Setting"]
+offset_left = 150.0
+offset_top = -300.0
+offset_right = 300.0
+offset_bottom = -250.0
+text = "60秒"
+
+[node name="GameTime90Btn" type="Button" parent="UI_Setting"]
+offset_left = 350.0
+offset_top = -300.0
+offset_right = 500.0
+offset_bottom = -250.0
+text = "90秒"
+
+[node name="BackBtn" type="Button" parent="UI_Setting"]
+offset_left = -150.0
+offset_top = 500.0
+offset_right = 150.0
+offset_bottom = 600.0
+text = "返回"
+
+[node name="UI_MainPage" type="Node2D" parent="."]
+visible = false
+
+[node name="MainPage_BG" type="Sprite2D" parent="UI_MainPage"]
+scale = Vector2(3.1200001, 3)
+texture = ExtResource("2_6bud7")
+
+[node name="MainPage_Title" type="Sprite2D" parent="UI_MainPage"]
+position = Vector2(-558, -762)
+scale = Vector2(3, 3)
+texture = ExtResource("3_3wbik")
+
+[node name="StartBtn" type="Button" parent="UI_MainPage"]
+offset_left = 1020.00006
+offset_top = -441.00003
+offset_right = 1263.0
+offset_bottom = -360.00003
+scale = Vector2(3.6399987, 3.7600002)
+text = "Start
+"
+icon = ExtResource("4_tlkba")
+autowrap_mode = 3
+icon_alignment = 1
+
+[node name="SettingBtn" type="Button" parent="UI_MainPage"]
+offset_left = 1020.00006
+offset_top = -105.0
+offset_right = 1263.0
+offset_bottom = -24.0
+scale = Vector2(3.6399987, 3.7600002)
+text = "Setting
+"
+icon = ExtResource("4_tlkba")
+autowrap_mode = 3
+icon_alignment = 1
+
+[node name="QuitBtn" type="Button" parent="UI_MainPage"]
+offset_left = 1020.00006
+offset_top = 245.99997
+offset_right = 1263.0
+offset_bottom = 326.99997
+scale = Vector2(3.6399987, 3.7600002)
+text = "quit"
+icon = ExtResource("4_tlkba")
+autowrap_mode = 3
+icon_alignment = 1
+
+[node name="UI_Result" type="Node2D" parent="."]
+visible = false
+
+[node name="Result_BG" type="Sprite2D" parent="UI_Result"]
+modulate = Color(0, 0, 0, 0.7)
+scale = Vector2(3.1200001, 3)
+texture = ExtResource("2_6bud7")
+
+[node name="ResultPanel" type="Node2D" parent="UI_Result"]
+
+[node name="Result_Title" type="Label" parent="UI_Result/ResultPanel"]
+offset_left = -300.0
+offset_top = -600.0
+offset_right = 300.0
+offset_bottom = -490.0
+theme_override_font_sizes/font_size = 80
+text = "游戏结束"
+horizontal_alignment = 1
+
+[node name="Result_1P_Label" type="Label" parent="UI_Result/ResultPanel"]
+offset_left = -400.0
+offset_top = -350.0
+offset_right = -50.0
+offset_bottom = -250.0
+theme_override_font_sizes/font_size = 60
+text = "1P: 0%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Result_2P_Label" type="Label" parent="UI_Result/ResultPanel"]
+offset_left = 50.0
+offset_top = -350.0
+offset_right = 400.0
+offset_bottom = -250.0
+theme_override_font_sizes/font_size = 60
+text = "2P: 0%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Result_Winner_Label" type="Label" parent="UI_Result/ResultPanel"]
+offset_left = -400.0
+offset_top = -150.0
+offset_right = 400.0
+offset_bottom = -20.0
+theme_override_font_sizes/font_size = 100
+text = "平局！"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ReturnMenuBtn" type="Button" parent="UI_Result"]
+offset_left = -200.0
+offset_top = 300.0
+offset_right = 200.0
+offset_bottom = 400.0
+theme_override_font_sizes/font_size = 50
+text = "返回主菜单"

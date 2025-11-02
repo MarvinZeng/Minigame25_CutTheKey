@@ -29,8 +29,15 @@ var last_split_check_time: float = 0.0  # 上次检查分割的时间
 var split_check_interval: float = 0.5  # 分割检查间隔（秒）
 
 func _ready():
-	# 添加到key组以便查找
-	add_to_group("key")
+	# 根据节点名称添加到不同的分组
+	var path_str = str(get_path())
+	if "1P" in path_str or "1p" in name.to_lower():
+		add_to_group("key_1p")
+	elif "2P" in path_str or "2p" in name.to_lower():
+		add_to_group("key_2p")
+	else:
+		# 默认行为
+		add_to_group("key")
 	
 	# 初始化多边形：从CollisionShape2D获取或创建默认矩形
 	initialize_polygon()
@@ -467,6 +474,7 @@ func create_cropped_texture(polygon: PackedVector2Array, bounds: Rect2) -> Image
 
 # 判断点是否在多边形内（射线法）
 static func is_point_in_polygon(point: Vector2, polygon: PackedVector2Array) -> bool:
+	"""判断点是否在多边形内（射线法）"""
 	if polygon.size() < 3:
 		return false
 	
@@ -483,3 +491,125 @@ static func is_point_in_polygon(point: Vector2, polygon: PackedVector2Array) -> 
 		j = i
 	
 	return inside
+
+# 公共方法：获取当前的切割后的多边形
+func get_current_polygon() -> PackedVector2Array:
+	"""返回当前多边形的顶点（本地坐标）"""
+	return current_polygon
+
+# 公共方法：获取钥匙的全局位置
+func get_key_global_position() -> Vector2:
+	"""返回钥匙的全局位置"""
+	return global_position
+
+# 公共方法：从被切割后的Image提取多边形轮廓
+func get_cut_polygon_from_image() -> PackedVector2Array:
+	"""
+	从cut_mask提取被保留（未擦除）的像素轮廓（优化版本：使用采样）
+	cut_mask: 白色(alpha>0.5) = 被保留，透明(alpha<=0.5) = 被擦除
+	返回相对于Sprite中心的本地坐标
+	"""
+	if not cut_mask or not sprite:
+		print("警告：无法提取多边形，cut_mask或精灵不存在")
+		return PackedVector2Array()
+	
+	var img_size = cut_mask.get_size()
+	var outline_points: Array[Vector2] = []
+	
+	# 优化：使用采样步长来减少像素遍历（每隔N个像素采样一次）
+	# 采样步长根据图像大小动态调整，图像越大步长越大
+	var sample_step = max(2, int(sqrt(img_size.x * img_size.y) / 100.0))  # 动态步长
+	
+	print("图像大小: %dx%d, 采样步长: %d" % [img_size.x, img_size.y, sample_step])
+	
+	# 只采样部分像素来找边界
+	for y in range(0, img_size.y, sample_step):
+		for x in range(0, img_size.x, sample_step):
+			var pixel = cut_mask.get_pixel(x, y)
+			# 如果像素未被擦除（alpha > 0.5 = 白色）
+			if pixel.a > 0.5:
+				# 检查这个像素是否在边界上（至少有一个邻近像素被擦除）
+				if _is_boundary_pixel_fast(x, y, img_size):
+					outline_points.append(Vector2(x, y))
+	
+	# 如果采样点太少（可能图像太小或切割太少），降低步长重新采样
+	if outline_points.size() < 20 and sample_step > 1:
+		outline_points.clear()
+		sample_step = max(1, sample_step / 2)
+		print("轮廓点太少，降低采样步长到: %d" % sample_step)
+		
+		for y in range(0, img_size.y, sample_step):
+			for x in range(0, img_size.x, sample_step):
+				var pixel = cut_mask.get_pixel(x, y)
+				if pixel.a > 0.5:
+					if _is_boundary_pixel_fast(x, y, img_size):
+						outline_points.append(Vector2(x, y))
+	
+	# 将像素坐标转换为Sprite本地坐标
+	var sprite_rect = sprite.get_rect()
+	var sprite_scale = sprite.scale
+	var polygon = PackedVector2Array()
+	
+	for point in outline_points:
+		# 转换为UV坐标(0-1)
+		var uv_x = float(point.x) / img_size.x
+		var uv_y = float(point.y) / img_size.y
+		
+		# 转换为Sprite本地坐标（中心在(0,0)）
+		var local_x = (uv_x - 0.5) * sprite_rect.size.x * sprite_scale.x
+		var local_y = (uv_y - 0.5) * sprite_rect.size.y * sprite_scale.y
+		
+		polygon.append(Vector2(local_x, local_y))
+	
+	print("从cut_mask提取多边形点数: %d（采样边界点数）" % polygon.size())
+	return polygon
+
+# 辅助函数：检查像素是否在被保留区域的边界上（快速版本，只检查4个方向）
+func _is_boundary_pixel_fast(x: int, y: int, img_size: Vector2i) -> bool:
+	"""检查像素是否是被保留区域的边界（周围有被擦除的像素） - 优化版本"""
+	# 只检查4个主方向，不检查对角线（更快）
+	var directions = [
+		Vector2i(0, -1),  # 上
+		Vector2i(-1, 0),  # 左
+		Vector2i(1, 0),   # 右
+		Vector2i(0, 1)    # 下
+	]
+	
+	for dir in directions:
+		var nx = x + dir.x
+		var ny = y + dir.y
+		
+		# 边界像素（超出图片范围的视为被擦除）
+		if nx < 0 or nx >= img_size.x or ny < 0 or ny >= img_size.y:
+			return true
+		
+		# 相邻像素被擦除（透明）
+		var neighbor = cut_mask.get_pixel(nx, ny)
+		if neighbor.a <= 0.5:
+			return true
+	
+	return false
+
+# 辅助函数：检查像素是否在被保留区域的边界上（完整版本，保留以备使用）
+func _is_boundary_pixel(x: int, y: int, img_size: Vector2i) -> bool:
+	"""检查像素是否是被保留区域的边界（周围有被擦除的像素）"""
+	var directions = [
+		Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
+		Vector2i(-1, 0),                   Vector2i(1, 0),
+		Vector2i(-1, 1),  Vector2i(0, 1),  Vector2i(1, 1)
+	]
+	
+	for dir in directions:
+		var nx = x + dir.x
+		var ny = y + dir.y
+		
+		# 边界像素（超出图片范围的视为被擦除）
+		if nx < 0 or nx >= img_size.x or ny < 0 or ny >= img_size.y:
+			return true
+		
+		# 相邻像素被擦除（透明）
+		var neighbor = cut_mask.get_pixel(nx, ny)
+		if neighbor.a <= 0.5:
+			return true
+	
+	return false
