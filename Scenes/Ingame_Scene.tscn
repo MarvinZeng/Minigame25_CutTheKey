@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://ddfu5jn53hcu1"]
+
+[ext_resource type="Script" uid="uid://xoe3yiyqu3lk" path="res://Scripts/KeyBlade.gd" id="1_key_script"]
+[ext_resource type="Texture2D" uid="uid://b3l1k0xphfqde" path="res://Assets/Sprite/Ingame_Key_Origin.png" id="1_ydafy"]
+[ext_resource type="Texture2D" uid="uid://w1q4dxli244f" path="res://Assets/Sprite/Ingame_Key_Target.png" id="2_4afd6"]
+[ext_resource type="PackedScene" uid="uid://baxqya4tut8jt" path="res://Scenes/Ingame_2d_laser.tscn" id="3_df812"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pkr1v"]
+
+[node name="Ingame_Scene" type="Node2D"]
+
+[node name="Ingame_Key_Origin" type="RigidBody2D" parent="."]
+position = Vector2(4, 0)
+gravity_scale = 0.0
+script = ExtResource("1_key_script")
+
+[node name="Image" type="Sprite2D" parent="Ingame_Key_Origin"]
+texture = ExtResource("1_ydafy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame_Key_Origin"]
+position = Vector2(268, -1)
+scale = Vector2(42, 13.4)
+shape = SubResource("RectangleShape2D_pkr1v")
+
+[node name="Ingame_Key_Target" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.27451)
+position = Vector2(0, -3)
+scale = Vector2(3.4, 3.48)
+texture = ExtResource("2_4afd6")
+
+[node name="Ingame_2D_Laser" parent="." instance=ExtResource("3_df812")]
+position = Vector2(-38, -539)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)

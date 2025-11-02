@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://baxqya4tut8jt"]
+
+[ext_resource type="Texture2D" uid="uid://bkuf7btiyg2w1" path="res://Assets/Sprite/2DLaser_1.png" id="1_44j2e"]
+[ext_resource type="Script" uid="uid://v6taute5q77" path="res://Scripts/LaserController.gd" id="1_laser_script"]
+[ext_resource type="Texture2D" uid="uid://dqbys4yshlurf" path="res://Assets/Sprite/2DLaser_2.png" id="2_8732g"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_44j2e"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_44j2e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_8732g")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8732g"]
+radius = 20.0
+
+[node name="RigidBody2D" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_laser_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.78, 0.985)
+sprite_frames = SubResource("SpriteFrames_44j2e")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 360)
+shape = SubResource("CircleShape2D_8732g")
