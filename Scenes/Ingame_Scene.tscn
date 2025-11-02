@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://w1q4dxli244f" path="res://Assets/Sprite/Ingame_Key_Target.png" id="2_4afd6"]
 [ext_resource type="PackedScene" uid="uid://baxqya4tut8jt" path="res://Scenes/Ingame_2d_laser.tscn" id="3_df812"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pkr1v"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4afd6"]
 
 [node name="Ingame_Scene" type="Node2D"]
 
@@ -14,17 +14,23 @@ position = Vector2(4, 0)
 gravity_scale = 0.0
 script = ExtResource("1_key_script")
 
-[node name="Image" type="Sprite2D" parent="Ingame_Key_Origin"]
-texture = ExtResource("1_ydafy")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame_Key_Origin"]
-position = Vector2(268, -1)
+position = Vector2(268, 10.5)
 scale = Vector2(42, 13.4)
-shape = SubResource("RectangleShape2D_pkr1v")
+shape = SubResource("RectangleShape2D_4afd6")
+
+[node name="Polygon2D" type="Polygon2D" parent="Ingame_Key_Origin"]
+position = Vector2(42, -30)
+scale = Vector2(42, 13.4)
+polygon = PackedVector2Array(-4.64286, -7.01493, -3.30952, -7.01493, -2.80952, -5.67164, -2.80952, -3.50746, -1.07143, -3.28358, 0.142857, 0.373134, 1.66667, -3.65672, 4.47619, -3.65672, 4.95238, -0.970149, 5.69048, -3.65672, 9.28572, -3.73134, 10.0476, -1.79104, 10.8333, -3.73134, 13.2381, -3.8806, 14.619, 1.04478, 14.5714, 2.46269, 13.0476, 6.86567, 9.21429, 6.86567, 8.85714, 5.67164, 8.09524, 8.35821, 7.04762, 8.20896, 6.57143, 6.71642, 5.90476, 8.65672, 3.54762, 8.58209, 2.69048, 5.89552, 2.02381, 8.73134, -2.7381, 8.65672, -2.80952, 11.2687, -3.45238, 13.0597, -4.61905, 13.1343)
+
+[node name="Image" type="Sprite2D" parent="Ingame_Key_Origin"]
+position = Vector2(0, 11.5)
+texture = ExtResource("1_ydafy")
 
 [node name="Ingame_Key_Target" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.27451)
-position = Vector2(0, -3)
+position = Vector2(-5, 10)
 scale = Vector2(3.4, 3.48)
 texture = ExtResource("2_4afd6")
 
@@ -33,3 +39,5 @@ position = Vector2(-38, -539)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
+
+[node name="UI" type="CanvasLayer" parent="."]
