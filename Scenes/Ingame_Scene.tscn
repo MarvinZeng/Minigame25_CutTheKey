@@ -4,12 +4,12 @@
 [ext_resource type="Script" uid="uid://xoe3yiyqu3lk" path="res://Scripts/KeyBlade.gd" id="1_key_script"]
 [ext_resource type="Texture2D" uid="uid://b3l1k0xphfqde" path="res://Assets/Sprite/Ingame_Key_Origin.png" id="1_ydafy"]
 [ext_resource type="Texture2D" uid="uid://w1q4dxli244f" path="res://Assets/Sprite/Ingame_Key_Target.png" id="2_4afd6"]
-[ext_resource type="Texture2D" uid="uid://c4slk4eyfkgti" path="res://Assets/Sprite/MainPage_BG.png" id="2_6bud7"]
+[ext_resource type="Texture2D" uid="uid://c4slk4eyfkgti" path="res://Assets/Sprite/Mainpage_BG.png" id="2_6bud7"]
 [ext_resource type="Texture2D" uid="uid://ceu3jm1dujgw1" path="res://Assets/Sprite/MainPage_Title.png" id="3_3wbik"]
 [ext_resource type="PackedScene" uid="uid://baxqya4tut8jt" path="res://Scenes/Ingame_2d_laser.tscn" id="3_df812"]
-[ext_resource type="Script" uid="uid://khqs14duy8kr" path="res://Scripts/LaserController2P.gd" id="3_laser_script_2p"]
+[ext_resource type="Script" path="res://Scripts/LaserController2P.gd" id="3_laser_script_2p"]
 [ext_resource type="Texture2D" uid="uid://cjgmeernhlw5p" path="res://Assets/Sprite/MainPage_Btn.png" id="4_tlkba"]
-[ext_resource type="Script" uid="uid://7h3vlcc80ta4" path="res://Scripts/UIManager.gd" id="4_ui_manager_script"]
+[ext_resource type="Script" path="res://Scripts/UIManager.gd" id="4_ui_manager_script"]
 [ext_resource type="Texture2D" uid="uid://lfnpvsyjwnjn" path="res://Assets/Sprite/Ingame_BG1.png" id="5_cop02"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pkr1v"]
@@ -24,7 +24,7 @@ zoom = Vector2(0.28, 0.28)
 [node name="UI_Ingame" type="Node2D" parent="."]
 
 [node name="Ingame_BG" type="Sprite2D" parent="UI_Ingame"]
-scale = Vector2(3.079999, 3.0000007)
+scale = Vector2(3.08, 3)
 texture = ExtResource("5_cop02")
 
 [node name="CountdownLabel" type="Label" parent="UI_Ingame"]
@@ -38,11 +38,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="TimerLabel" type="Label" parent="UI_Ingame"]
-offset_left = 881.0001
+offset_left = 881.0
 offset_top = -1056.0
-offset_right = 1191.0001
+offset_right = 1191.0
 offset_bottom = -956.0
-scale = Vector2(3.6140046, 3.3890092)
+scale = Vector2(3.614, 3.38901)
 theme_override_font_sizes/font_size = 60
 text = "倒计时: 30s"
 horizontal_alignment = 2
@@ -53,7 +53,7 @@ position = Vector2(-12, 0)
 [node name="1P" type="Node2D" parent="Ingame"]
 
 [node name="Ingame_Key_Origin_1P" type="RigidBody2D" parent="Ingame/1P"]
-position = Vector2(-1016.8999, 626)
+position = Vector2(-1016.9, 626)
 gravity_scale = 0.0
 script = ExtResource("1_key_script")
 
@@ -61,29 +61,30 @@ script = ExtResource("1_key_script")
 texture = ExtResource("1_ydafy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame/1P/Ingame_Key_Origin_1P"]
-position = Vector2(310.8999, -1)
+position = Vector2(310.9, -1)
 scale = Vector2(38, 13.5)
 shape = SubResource("RectangleShape2D_pkr1v")
 
 [node name="Ingame_Key_Target_1P" type="Sprite2D" parent="Ingame/1P"]
 modulate = Color(1, 1, 1, 0.27451)
-position = Vector2(-1020.8999, 623)
+position = Vector2(-1020.9, 623)
 scale = Vector2(3.4, 3.48)
 texture = ExtResource("2_4afd6")
 
 [node name="Ingame_2D_Laser_1P" parent="Ingame/1P" instance=ExtResource("3_df812")]
-position = Vector2(-1130, 87)
+position = Vector2(-1009, 87)
+scale = Vector2(-1, 1)
 
 [node name="2P" type="Node2D" parent="Ingame"]
 
 [node name="Ingame_Key_Origin_2P" type="RigidBody2D" parent="Ingame/2P"]
-modulate = Color(0.49019608, 0, 1, 1)
-position = Vector2(985.1001, 626.48)
+modulate = Color(0.490196, 0, 1, 1)
+position = Vector2(985.1, 626.48)
 gravity_scale = 0.0
 script = ExtResource("1_key_script")
 
 [node name="Image" type="Sprite2D" parent="Ingame/2P/Ingame_Key_Origin_2P"]
-position = Vector2(-0.100097656, -0.47998047)
+position = Vector2(-0.100098, -0.47998)
 texture = ExtResource("1_ydafy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ingame/2P/Ingame_Key_Origin_2P"]
@@ -99,34 +100,33 @@ scale = Vector2(3.4, 3.48)
 texture = ExtResource("2_4afd6")
 
 [node name="Ingame_2D_Laser_2P" parent="Ingame/2P" instance=ExtResource("3_df812")]
-modulate = Color(0.95821273, 1.7686381, 1.8916494, 1)
+modulate = Color(0.958213, 1.76864, 1.89165, 1)
 position = Vector2(869, 83)
-scale = Vector2(-1, 1)
 script = ExtResource("3_laser_script_2p")
 
 [node name="Public" type="Node2D" parent="Ingame"]
 
 [node name="EndDrawingBtn" type="Button" parent="Ingame/Public"]
 offset_left = -1964.0
-offset_top = 808.99976
+offset_top = 809.0
 offset_right = -1926.0
-offset_bottom = 839.99976
-scale = Vector2(5.160001, 4.479998)
+offset_bottom = 840.0
+scale = Vector2(5.16, 4.48)
 text = "End"
 
 [node name="IngameKeyShining" type="Sprite2D" parent="Ingame/Public"]
 position = Vector2(25, -825)
-scale = Vector2(3.8224726, 3.8571606)
+scale = Vector2(3.82247, 3.85716)
 texture = ExtResource("1_27c5n")
 
 [node name="ActualKeyShape" type="Polygon2D" parent="Ingame/Public/IngameKeyShining"]
-polygon = PackedVector2Array(-13.184544, -17.17781, -7.0175796, -17.17781, 1.2759237, -17.17781, 11.695967, -7.3005524, 23.604586, -18.251434, 49.335716, -18.251434, 53.588795, -10.950851, 59.117794, -18.466156, 92.71711, -18.466156, 96.97019, -13.0980835, 103.13715, -19.110321, 126.10378, -19.110321, 137.79976, -6.6563873, 137.79976, -1.2883148, 124.615204, 13.098137, 90.16527, 13.098137, 86.337494, 10.092018, 80.808495, 16.318985, 69.32518, 16.318985, 66.985985, 12.453972, 62.945568, 16.318985, 39.34098, 16.318985, 33.811977, 10.950905, 28.70828, 16.748436, -13.184544, 16.748436)
+polygon = PackedVector2Array(-13.1845, -17.1778, -7.01758, -17.1778, 1.27592, -17.1778, 11.696, -7.30055, 23.6046, -18.2514, 49.3357, -18.2514, 53.5888, -10.9509, 59.1178, -18.4662, 92.7171, -18.4662, 96.9702, -13.0981, 103.137, -19.1103, 126.104, -19.1103, 137.8, -6.65639, 137.8, -1.28831, 124.615, 13.0981, 90.1653, 13.0981, 86.3375, 10.092, 80.8085, 16.319, 69.3252, 16.319, 66.986, 12.454, 62.9456, 16.319, 39.341, 16.319, 33.812, 10.9509, 28.7083, 16.7484, -13.1845, 16.7484)
 
 [node name="UI_Setting" type="Node2D" parent="."]
 visible = false
 
 [node name="Setting_BG" type="Sprite2D" parent="UI_Setting"]
-scale = Vector2(3.1200001, 3)
+scale = Vector2(3.12, 3)
 texture = ExtResource("2_6bud7")
 
 [node name="Setting_Title" type="Label" parent="UI_Setting"]
@@ -201,7 +201,7 @@ text = "返回"
 visible = false
 
 [node name="MainPage_BG" type="Sprite2D" parent="UI_MainPage"]
-scale = Vector2(3.1200001, 3)
+scale = Vector2(3.12, 3)
 texture = ExtResource("2_6bud7")
 
 [node name="MainPage_Title" type="Sprite2D" parent="UI_MainPage"]
@@ -210,11 +210,11 @@ scale = Vector2(3, 3)
 texture = ExtResource("3_3wbik")
 
 [node name="StartBtn" type="Button" parent="UI_MainPage"]
-offset_left = 1020.00006
-offset_top = -441.00003
+offset_left = 1020.0
+offset_top = -441.0
 offset_right = 1263.0
-offset_bottom = -360.00003
-scale = Vector2(3.6399987, 3.7600002)
+offset_bottom = -360.0
+scale = Vector2(3.64, 3.76)
 text = "Start
 "
 icon = ExtResource("4_tlkba")
@@ -222,11 +222,11 @@ autowrap_mode = 3
 icon_alignment = 1
 
 [node name="SettingBtn" type="Button" parent="UI_MainPage"]
-offset_left = 1020.00006
+offset_left = 1020.0
 offset_top = -105.0
 offset_right = 1263.0
 offset_bottom = -24.0
-scale = Vector2(3.6399987, 3.7600002)
+scale = Vector2(3.64, 3.76)
 text = "Setting
 "
 icon = ExtResource("4_tlkba")
@@ -234,11 +234,11 @@ autowrap_mode = 3
 icon_alignment = 1
 
 [node name="QuitBtn" type="Button" parent="UI_MainPage"]
-offset_left = 1020.00006
-offset_top = 245.99997
+offset_left = 1020.0
+offset_top = 246.0
 offset_right = 1263.0
-offset_bottom = 326.99997
-scale = Vector2(3.6399987, 3.7600002)
+offset_bottom = 327.0
+scale = Vector2(3.64, 3.76)
 text = "quit"
 icon = ExtResource("4_tlkba")
 autowrap_mode = 3
@@ -249,7 +249,7 @@ visible = false
 
 [node name="Result_BG" type="Sprite2D" parent="UI_Result"]
 modulate = Color(0, 0, 0, 0.7)
-scale = Vector2(3.1200001, 3)
+scale = Vector2(3.12, 3)
 texture = ExtResource("2_6bud7")
 
 [node name="ResultPanel" type="Node2D" parent="UI_Result"]

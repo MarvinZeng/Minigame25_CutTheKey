@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjgmeernhlw5p"
-path="res://.godot/imported/MainPage_Btn.png-a96d1a3fdf7fb5978ab85c1b6786694a.ctex"
+uid="uid://clqsp5je7yxk"
+path="res://.godot/imported/RealLaser_3.png-b525348bf2cb30d3cc5f639e95bcc96c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprite/MainPage_Btn.png"
-dest_files=["res://.godot/imported/MainPage_Btn.png-a96d1a3fdf7fb5978ab85c1b6786694a.ctex"]
+source_file="res://Assets/Sprite/RealLaser_3.png"
+dest_files=["res://.godot/imported/RealLaser_3.png-b525348bf2cb30d3cc5f639e95bcc96c.ctex"]
 
 [params]
 

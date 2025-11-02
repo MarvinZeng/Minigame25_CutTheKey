@@ -1,17 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://baxqya4tut8jt"]
+[gd_scene load_steps=8 format=3 uid="uid://baxqya4tut8jt"]
 
 [ext_resource type="Script" uid="uid://v6taute5q77" path="res://Scripts/LaserController.gd" id="1_laser_script"]
-[ext_resource type="Texture2D" uid="uid://ccvmemw2usm3a" path="res://Assets/Sprite/RealLaser.png" id="2_8x1wx"]
-[ext_resource type="Texture2D" uid="uid://dmlajyearxbdu" path="res://Assets/Sprite/RealLaser_red.png" id="3_fhmx8"]
+[ext_resource type="Texture2D" uid="uid://dgf7dsteaow12" path="res://Assets/Sprite/RealLaser_1.png" id="2_tmvfx"]
+[ext_resource type="Texture2D" uid="uid://vlko61jxsgto" path="res://Assets/Sprite/RealLaser_2.png" id="3_qq0ma"]
+[ext_resource type="Texture2D" uid="uid://clqsp5je7yxk" path="res://Assets/Sprite/RealLaser_3.png" id="4_ckb8l"]
+[ext_resource type="Texture2D" uid="uid://c6xajemfq2frw" path="res://Assets/Sprite/RealLaser_4.png" id="5_p78iv"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_44j2e"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_8x1wx")
+"texture": ExtResource("2_tmvfx")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_fhmx8")
+"texture": ExtResource("3_qq0ma")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ckb8l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_p78iv")
 }],
 "loop": true,
 "name": &"default",
@@ -26,11 +34,12 @@ gravity_scale = 0.0
 script = ExtResource("1_laser_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(-409, 102.00001)
-scale = Vector2(3.230001, 2.9450006)
+position = Vector2(400, 78)
+scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_44j2e")
 autoplay = "default"
-frame_progress = 0.6625105
+frame = 1
+frame_progress = 0.412183
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 360)
