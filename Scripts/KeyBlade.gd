@@ -233,25 +233,37 @@ func apply_mask_to_texture():
 
 # 创建PolygonShape2D资源
 func create_polygon_shape_resource():
-	# 方法1：如果已有多边形形状，直接复制
+	# 方法1：如果已有多边形形状，直接复制（推荐方法）
 	var collision = get_node_or_null("CollisionShape2D")
 	if collision and collision.shape:
 		if collision.shape.get_class() == "PolygonShape2D" or collision.shape.has_method("get_polygon"):
 			var new_shape = collision.shape.duplicate()
-			new_shape.polygon = PackedVector2Array()
+			new_shape.polygon = PackedVector2Array()  # 清空，准备设置新的
 			return new_shape
 	
-	# 方法2：直接使用new()（不指定类型声明）
-	# 在Godot 4中，这应该可以工作
-	var shape = _create_polygon_shape_new()
-	return shape
+	# 方法2：尝试在整个场景树中查找任何PolygonShape2D资源
+	var scene = get_tree().current_scene
+	if scene:
+		var all_collisions = _find_all_collision_shapes(scene)
+		for col in all_collisions:
+			if col.shape:
+				if col.shape.get_class() == "PolygonShape2D" or col.shape.has_method("get_polygon"):
+					var new_shape = col.shape.duplicate()
+					new_shape.polygon = PackedVector2Array()
+					return new_shape
+	
+	# 如果都失败了，返回null
+	print("警告：无法创建PolygonShape2D，需要在场景中至少有一个PolygonShape2D资源以供复制")
+	return null
 
-# 直接创建PolygonShape2D（不使用类型注解）
-func _create_polygon_shape_new():
-	# 在Godot 4中，直接使用类型名应该可以工作
-	# 但如果不行，我们需要其他方法
-	var shape = PolygonShape2D.new()
-	return shape
+# 递归查找场景中所有的CollisionShape2D节点
+func _find_all_collision_shapes(node: Node) -> Array:
+	var result = []
+	for child in node.get_children():
+		if child is CollisionShape2D:
+			result.append(child)
+		result.append_array(_find_all_collision_shapes(child))
+	return result
 
 # 初始化多边形（从CollisionShape2D获取或创建默认矩形）
 func initialize_polygon():
